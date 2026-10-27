@@ -1,7 +1,7 @@
 SET SERVEROUTPUT ON
 
 DECLARE
-    v_zero NUMBER := 0;
+  v_zero NUMBER := 0;
 BEGIN
     DBMS_OUTPUT.PUT_LINE('outer: start');
 
@@ -11,43 +11,17 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('inner: end');
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            DBMS_OUTPUT.PUT_LINE('inner: cause an error');
-    end;
+            DBMS_OUTPUT.PUT_LINE('inner: caught divide by zero');
+    END;
 
-EXCEPTION
+
+
+    DBMS_OUTPUT.PUT_LINE('outer: continues');
+    EXCEPTION
     WHEN ZERO_DIVIDE THEN
-        DBMS_OUTPUT.PUT_LINE('outer: caught zero divinde');
+        DBMS_OUTPUT.PUT_LINE('outer: caught divide by zero');
 END;
 /
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
