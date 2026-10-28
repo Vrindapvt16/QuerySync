@@ -83,3 +83,20 @@ goood topic for maria db
   outward. A handled error ends that block normally and execution continues after it.
   An error caught by an outer block skips the rest of the outer BEGIN section.
   With no matching handler anywhere, the error reaches the caller (ORA-01476 example).
+
+  - Sequences: NEXTVAL advances the counter; CURRVAL returns the value this session last
+  got from NEXTVAL and does not advance it.
+- CURRVAL before any NEXTVAL in the session raises ORA-08002. Dropping and recreating a
+  sequence resets this, since it is a new object.
+- `DROP SEQUENCE IF EXISTS` is accepted by Oracle Free 23.26 (older Oracle versions may
+  not accept IF EXISTS). Test on MariaDB.
+
+  - Sequences are outside transactions: ROLLBACK undoes the inserted row but not the
+  NEXTVAL (id 102 was used, rolled back, and the next NEXTVAL returned 103).
+  Sequences guarantee uniqueness, not gap-free numbering.
+
+
+  - Trigger `BEFORE INSERT ... FOR EACH ROW WHEN (NEW.emp_id IS NULL)` fills the id from
+  the sequence only when none is supplied; explicit ids bypass it and don't consume the
+  sequence. The trigger's :NEW syntax needs a colon in the body but not in WHEN.
+  To test on MariaDB (unverified: :NEW support, trigger syntax in ORACLE mode).

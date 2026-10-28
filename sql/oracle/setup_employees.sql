@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS employees;
+DROP SEQUENCE IF EXISTS emp_seq;
 
 CREATE TABLE employees (
   emp_id  NUMBER PRIMARY KEY,
@@ -12,3 +13,5 @@ INSERT INTO employees VALUES (2, 'Linus', 'IT',    4500);
 INSERT INTO employees VALUES (3, 'Grace', 'HR',    4000);
 INSERT INTO employees VALUES (4, 'Alan',  'Sales', 3500);
 COMMIT;
+
+CREATE SEQUENCE emp_seq START WITH 5 INCREMENT BY 1;
