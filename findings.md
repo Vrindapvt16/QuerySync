@@ -100,3 +100,14 @@ goood topic for maria db
   the sequence only when none is supplied; explicit ids bypass it and don't consume the
   sequence. The trigger's :NEW syntax needs a colon in the body but not in WHEN.
   To test on MariaDB (unverified: :NEW support, trigger syntax in ORACLE mode).
+
+
+  - Package: a subprogram that exists only in the body is private. The body compiles with no
+  error; calling it from outside fails with PLS-00302 ("component must be declared") when
+  the caller compiles. Public subprograms must be listed in the spec.
+
+
+  - Package variables keep their value between calls within a session (counter went 0 -> 2
+  -> 4 across two runs) and reset in a new session. Re-running CREATE OR REPLACE of the
+  package in the same session did not reset the counter here.
+  To test on MariaDB (unverified: package variables, per-session state).
