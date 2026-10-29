@@ -111,3 +111,17 @@ goood topic for maria db
   -> 4 across two runs) and reset in a new session. Re-running CREATE OR REPLACE of the
   package in the same session did not reset the counter here.
   To test on MariaDB (unverified: package variables, per-session state).
+
+
+  - Package state vs recompiling: re-running unchanged code kept the counter (22 -> 33);
+  after the source changed (+1 to +11) the counter restarted at 0, in the same session.
+  Inferred from the run log; to confirm. Other sessions may get ORA-04068 (untested).
+- Paths inside the container are case-sensitive (/SCRIPTS/... fails, /scripts/... works).
+
+- Two sessions (Oracle Free 23.26): session 1 held package state (count 14); session 2 ran
+  CREATE OR REPLACE for the package. Session 1's next call raised ORA-04068 (with 04061,
+  04065, 06508). The call after that worked with fresh state (count 0), and the
+  initialization block ran again. So init runs when package state is (re)created, not
+  strictly once per session.
+- Whether the invalidation also happens when session 2 recompiles unchanged source:
+  (to test).
