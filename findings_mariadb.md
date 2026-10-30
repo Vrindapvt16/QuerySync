@@ -39,3 +39,17 @@ was added, which is a `mariadb` client command, not part of the code.
 
 Not tested yet on MariaDB: reading a private package variable from outside, the
 initialization block, and another session redefining the package (Oracle gave ORA-04068).
+
+
+new findings woow, 
+## Test: variables and constants in the package spec (MariaDB 11.8.9 vs Oracle Free 23.26)
+
+| Check | Oracle | MariaDB |
+|---|---|---|
+| Spec with a variable (`g_x NUMBER;` or `g_pub NUMBER := 7;`) | accepted | ERROR 1064 syntax error |
+| Spec with a constant (`c_x CONSTANT NUMBER := 7;`) | accepted | ERROR 1064 syntax error |
+| Spec with only a function declaration | accepted | accepted |
+| Variable declared in the body | accepted | accepted (state kept per session) |
+| `SELECT emp_pkg.g_calls` (body-only variable) | PLS-00302 "component must be declared" | ERROR 1109 Unknown table 'emp_pkg' |
+
+Consequence: Oracle code with spec constants or variables does not load unchanged.
