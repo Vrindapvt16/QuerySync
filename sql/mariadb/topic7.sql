@@ -24,7 +24,7 @@ DELIMITER ;
 -- END add_numbers;
 -- //
 
-DELIMITER ;
+--DELIMITER ;
 
 -- DELIMITER //
 
@@ -34,7 +34,7 @@ DELIMITER ;
 -- END double_value;
 -- //
 
-DELIMITER ;
+--DELIMITER ;
 
 -- DELIMITER //
 
