@@ -53,3 +53,16 @@ new findings woow,
 | `SELECT emp_pkg.g_calls` (body-only variable) | PLS-00302 "component must be declared" | ERROR 1109 Unknown table 'emp_pkg' |
 
 Consequence: Oracle code with spec constants or variables does not load unchanged.
+
+
+am runing this commands for better testing 
+
+Deletes the existing HR database and creates a fresh one.
+docker exec -i mariadb-oracle-mode mariadb -uroot -p -e "DROP DATABASE IF EXISTS hr; CREATE DATABASE hr;"
+
+Runs the table-creation script using Oracle compatibility mode.
+
+docker exec -i mariadb-oracle-mode mariadb -uroot -p --force --init-command="SET sql_mode='ORACLE'" hr < sql\mariadb\human_resources_migrated\hr_create.sql 2> logs\create_step1.log
+
+CONNECT TO HR DATABASE
+docker exec -it mariadb-oracle-mode mariadb -uroot -p hr
