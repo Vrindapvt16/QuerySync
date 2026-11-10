@@ -1,0 +1,425 @@
+--------------
+CREATE TABLE countries 
+    ( country_id      CHAR(2) 
+       NOT NULL 
+    , country_name    VARCHAR2(60) 
+    , region_id       NUMBER 
+    , CONSTRAINT     country_c_id_pk 
+        	     PRIMARY KEY (country_id) 
+    ) 
+    ORGANIZATION INDEX
+--------------
+
+ERROR 1064 (42000) at line 73: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'INDEX' at line 9
+--------------
+ALTER TABLE countries
+ADD ( CONSTRAINT countr_reg_fk
+        	 FOREIGN KEY (region_id)
+          	  REFERENCES regions(region_id) 
+    )
+--------------
+
+ERROR 1146 (42S02) at line 83: Table 'hr.countries' doesn't exist
+--------------
+ALTER TABLE locations
+ADD ( CONSTRAINT loc_id_pk
+       		 PRIMARY KEY (location_id)
+    , CONSTRAINT loc_c_id_fk
+       		 FOREIGN KEY (country_id)
+        	  REFERENCES countries(country_id) 
+    )
+--------------
+
+ERROR 1005 (HY000) at line 106: Can't create table `hr`.`locations` (errno: 150 "Foreign key constraint is incorrectly formed")
+--------------
+ALTER TABLE employees
+ADD ( CONSTRAINT     emp_emp_id_pk
+                     PRIMARY KEY (employee_id)
+    , CONSTRAINT     emp_dept_fk
+                     FOREIGN KEY (department_id)
+                      REFERENCES departments
+    , CONSTRAINT     emp_job_fk
+                     FOREIGN KEY (job_id)
+                      REFERENCES jobs (job_id)
+    , CONSTRAINT     emp_manager_fk
+                     FOREIGN KEY (manager_id)
+                      REFERENCES employees
+    )
+--------------
+
+ERROR 1005 (HY000) at line 208: Can't create table `hr`.`employees` (errno: 150 "Foreign key constraint is incorrectly formed")
+--------------
+CREATE OR REPLACE VIEW emp_details_view
+  (employee_id,
+   job_id,
+   manager_id,
+   department_id,
+   location_id,
+   country_id,
+   first_name,
+   last_name,
+   salary,
+   commission_pct,
+   department_name,
+   job_title,
+   city,
+   state_province,
+   country_name,
+   region_name)
+AS SELECT
+  e.employee_id, 
+  e.job_id, 
+  e.manager_id, 
+  e.department_id,
+  d.location_id,
+  l.country_id,
+  e.first_name,
+  e.last_name,
+  e.salary,
+  e.commission_pct,
+  d.department_name,
+  j.job_title,
+  l.city,
+  l.state_province,
+  c.country_name,
+  r.region_name
+FROM
+  employees e,
+  departments d,
+  jobs j,
+  locations l,
+  countries c,
+  regions r
+WHERE e.department_id = d.department_id
+  AND d.location_id = l.location_id
+  AND l.country_id = c.country_id
+  AND c.region_id = r.region_id
+  AND j.job_id = e.job_id 
+WITH READ ONLY
+--------------
+
+ERROR 1064 (42000) at line 280: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'READ ONLY' at line 47
+--------------
+COMMENT ON TABLE regions 
+IS 'Regions table that contains region numbers and names. references with the Countries table.'
+--------------
+
+ERROR 1064 (42000) at line 368: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON TABLE regions 
+IS 'Regions table that contains region numbers and names. r...' at line 1
+--------------
+COMMENT ON COLUMN regions.region_id
+IS 'Primary key of regions table.'
+--------------
+
+ERROR 1064 (42000) at line 371: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN regions.region_id
+IS 'Primary key of regions table.'' at line 1
+--------------
+COMMENT ON COLUMN regions.region_name
+IS 'Names of regions. Locations are in the countries of these regions.'
+--------------
+
+ERROR 1064 (42000) at line 374: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN regions.region_name
+IS 'Names of regions. Locations are in the coun...' at line 1
+--------------
+COMMENT ON TABLE locations
+IS 'Locations table that contains specific address of a specific office,
+warehouse, and/or production site of a company. Does not store addresses /
+locations of customers. references with the departments and countries tables. '
+--------------
+
+ERROR 1064 (42000) at line 377: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON TABLE locations
+IS 'Locations table that contains specific address of a sp...' at line 1
+--------------
+COMMENT ON COLUMN locations.location_id
+IS 'Primary key of locations table'
+--------------
+
+ERROR 1064 (42000) at line 382: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN locations.location_id
+IS 'Primary key of locations table'' at line 1
+--------------
+COMMENT ON COLUMN locations.street_address
+IS 'Street address of an office, warehouse, or production site of a company.
+Contains building number and street name'
+--------------
+
+ERROR 1064 (42000) at line 385: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN locations.street_address
+IS 'Street address of an office, warehouse...' at line 1
+--------------
+COMMENT ON COLUMN locations.postal_code
+IS 'Postal code of the location of an office, warehouse, or production site 
+of a company. '
+--------------
+
+ERROR 1064 (42000) at line 389: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN locations.postal_code
+IS 'Postal code of the location of an office,...' at line 1
+--------------
+COMMENT ON COLUMN locations.city
+IS 'A not null column that shows city where an office, warehouse, or 
+production site of a company is located. '
+--------------
+
+ERROR 1064 (42000) at line 393: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN locations.city
+IS 'A not null column that shows city where an offic...' at line 1
+--------------
+COMMENT ON COLUMN locations.state_province
+IS 'State or Province where an office, warehouse, or production site of a 
+company is located.'
+--------------
+
+ERROR 1064 (42000) at line 397: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN locations.state_province
+IS 'State or Province where an office, war...' at line 1
+--------------
+COMMENT ON COLUMN locations.country_id
+IS 'Country where an office, warehouse, or production site of a company is
+located. Foreign key to country_id column of the countries table.'
+--------------
+
+ERROR 1064 (42000) at line 401: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN locations.country_id
+IS 'Country where an office, warehouse, or pro...' at line 1
+--------------
+COMMENT ON TABLE departments
+IS 'Departments table that shows details of departments where employees 
+work. references with locations, employees, and job_history tables.'
+--------------
+
+ERROR 1064 (42000) at line 408: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON TABLE departments
+IS 'Departments table that shows details of departments ...' at line 1
+--------------
+COMMENT ON COLUMN departments.department_id
+IS 'Primary key column of departments table.'
+--------------
+
+ERROR 1064 (42000) at line 412: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN departments.department_id
+IS 'Primary key column of departments tab...' at line 1
+--------------
+COMMENT ON COLUMN departments.department_name
+IS 'A not null column that shows name of a department. Administration, 
+Marketing, Purchasing, Human Resources, Shipping, IT, Executive, Public 
+Relations, Sales, Finance, and Accounting. '
+--------------
+
+ERROR 1064 (42000) at line 415: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN departments.department_name
+IS 'A not null column that shows name o...' at line 1
+--------------
+COMMENT ON COLUMN departments.manager_id
+IS 'Manager_id of a department. Foreign key to employee_id column of employees table. The manager_id column of the employee table references this column.'
+--------------
+
+ERROR 1064 (42000) at line 420: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN departments.manager_id
+IS 'Manager_id of a department. Foreign key ...' at line 1
+--------------
+COMMENT ON COLUMN departments.location_id
+IS 'Location id where a department is located. Foreign key to location_id column of locations table.'
+--------------
+
+ERROR 1064 (42000) at line 423: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN departments.location_id
+IS 'Location id where a department is locat...' at line 1
+--------------
+COMMENT ON TABLE job_history
+IS 'Table that stores job history of the employees. If an employee 
+changes departments within the job or changes jobs within the department, 
+new rows get inserted into this table with old job information of the 
+employee. Contains a complex primary key: employee_id+start_date.
+References with jobs, employees, and departments tables.'
+--------------
+
+ERROR 1064 (42000) at line 429: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON TABLE job_history
+IS 'Table that stores job history of the employees. If a...' at line 1
+--------------
+COMMENT ON COLUMN job_history.employee_id
+  IS 'A not null column in the complex primary key employee_id+start_date. 
+Foreign key to employee_id column of the employee table'
+--------------
+
+ERROR 1064 (42000) at line 436: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN job_history.employee_id
+  IS 'A not null column in the complex prim...' at line 1
+--------------
+COMMENT ON COLUMN job_history.start_date
+  IS 'A not null column in the complex primary key employee_id+start_date. 
+Must be less than the end_date of the job_history table. (enforced by 
+constraint jhist_date_interval)'
+--------------
+
+ERROR 1064 (42000) at line 440: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN job_history.start_date
+  IS 'A not null column in the complex prima...' at line 1
+--------------
+COMMENT ON COLUMN job_history.end_date
+  IS 'Last day of the employee in this job role. A not null column. Must be 
+greater than the start_date of the job_history table. 
+(enforced by constraint jhist_date_interval)'
+--------------
+
+ERROR 1064 (42000) at line 445: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN job_history.end_date
+  IS 'Last day of the employee in this job rol...' at line 1
+--------------
+COMMENT ON COLUMN job_history.job_id
+  IS 'Job role in which the employee worked in the past; foreign key to 
+job_id column in the jobs table. A not null column.'
+--------------
+
+ERROR 1064 (42000) at line 450: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN job_history.job_id
+  IS 'Job role in which the employee worked in t...' at line 1
+--------------
+COMMENT ON COLUMN job_history.department_id
+  IS 'Department id in which the employee worked in the past; foreign key to deparment_id column in the departments table'
+--------------
+
+ERROR 1064 (42000) at line 454: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN job_history.department_id
+  IS 'Department id in which the employee...' at line 1
+--------------
+COMMENT ON TABLE countries
+  IS 'country table. References with locations table.'
+--------------
+
+ERROR 1064 (42000) at line 459: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON TABLE countries
+  IS 'country table. References with locations table.'' at line 1
+--------------
+COMMENT ON COLUMN countries.country_id
+  IS 'Primary key of countries table.'
+--------------
+
+ERROR 1064 (42000) at line 462: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN countries.country_id
+  IS 'Primary key of countries table.'' at line 1
+--------------
+COMMENT ON COLUMN countries.country_name
+  IS 'Country name'
+--------------
+
+ERROR 1064 (42000) at line 465: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN countries.country_name
+  IS 'Country name'' at line 1
+--------------
+COMMENT ON COLUMN countries.region_id
+  IS 'Region ID for the country. Foreign key to region_id column in the departments table.'
+--------------
+
+ERROR 1064 (42000) at line 468: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN countries.region_id
+  IS 'Region ID for the country. Foreign key to...' at line 1
+--------------
+COMMENT ON TABLE jobs
+  IS 'jobs table with job titles and salary ranges.
+References with employees and job_history table.'
+--------------
+
+ERROR 1064 (42000) at line 473: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON TABLE jobs
+  IS 'jobs table with job titles and salary ranges.
+References ...' at line 1
+--------------
+COMMENT ON COLUMN jobs.job_id
+  IS 'Primary key of jobs table.'
+--------------
+
+ERROR 1064 (42000) at line 477: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN jobs.job_id
+  IS 'Primary key of jobs table.'' at line 1
+--------------
+COMMENT ON COLUMN jobs.job_title
+  IS 'A not null column that shows job title, e.g. AD_VP, FI_ACCOUNTANT'
+--------------
+
+ERROR 1064 (42000) at line 480: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN jobs.job_title
+  IS 'A not null column that shows job title, e.g. A...' at line 1
+--------------
+COMMENT ON COLUMN jobs.min_salary
+  IS 'Minimum salary for a job title.'
+--------------
+
+ERROR 1064 (42000) at line 483: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN jobs.min_salary
+  IS 'Minimum salary for a job title.'' at line 1
+--------------
+COMMENT ON COLUMN jobs.max_salary
+  IS 'Maximum salary for a job title'
+--------------
+
+ERROR 1064 (42000) at line 486: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN jobs.max_salary
+  IS 'Maximum salary for a job title'' at line 1
+--------------
+COMMENT ON TABLE employees
+  IS 'employees table. References with departments,
+jobs, job_history tables. Contains a self reference.'
+--------------
+
+ERROR 1064 (42000) at line 491: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON TABLE employees
+  IS 'employees table. References with departments,
+jobs, ...' at line 1
+--------------
+COMMENT ON COLUMN employees.employee_id
+  IS 'Primary key of employees table.'
+--------------
+
+ERROR 1064 (42000) at line 495: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.employee_id
+  IS 'Primary key of employees table.'' at line 1
+--------------
+COMMENT ON COLUMN employees.first_name
+  IS 'First name of the employee. A not null column.'
+--------------
+
+ERROR 1064 (42000) at line 498: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.first_name
+  IS 'First name of the employee. A not null c...' at line 1
+--------------
+COMMENT ON COLUMN employees.last_name
+  IS 'Last name of the employee. A not null column.'
+--------------
+
+ERROR 1064 (42000) at line 501: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.last_name
+  IS 'Last name of the employee. A not null col...' at line 1
+--------------
+COMMENT ON COLUMN employees.email
+  IS 'Email id of the employee'
+--------------
+
+ERROR 1064 (42000) at line 504: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.email
+  IS 'Email id of the employee'' at line 1
+--------------
+COMMENT ON COLUMN employees.phone_number
+  IS 'Phone number of the employee; includes country code and area code'
+--------------
+
+ERROR 1064 (42000) at line 507: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.phone_number
+  IS 'Phone number of the employee; includes...' at line 1
+--------------
+COMMENT ON COLUMN employees.hire_date
+  IS 'Date when the employee started on this job. A not null column.'
+--------------
+
+ERROR 1064 (42000) at line 510: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.hire_date
+  IS 'Date when the employee started on this jo...' at line 1
+--------------
+COMMENT ON COLUMN employees.job_id
+  IS 'Current job of the employee; foreign key to job_id column of the 
+jobs table. A not null column.'
+--------------
+
+ERROR 1064 (42000) at line 513: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.job_id
+  IS 'Current job of the employee; foreign key to ...' at line 1
+--------------
+COMMENT ON COLUMN employees.salary
+  IS 'Monthly salary of the employee. Must be greater 
+than zero (enforced by constraint emp_salary_min)'
+--------------
+
+ERROR 1064 (42000) at line 517: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.salary
+  IS 'Monthly salary of the employee. Must be grea...' at line 1
+--------------
+COMMENT ON COLUMN employees.commission_pct
+  IS 'Commission percentage of the employee; Only employees in sales 
+department elgible for commission percentage'
+--------------
+
+ERROR 1064 (42000) at line 521: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.commission_pct
+  IS 'Commission percentage of the employe...' at line 1
+--------------
+COMMENT ON COLUMN employees.manager_id
+  IS 'Manager id of the employee; has same domain as manager_id in 
+departments table. Foreign key to employee_id column of employees table. 
+(useful for reflexive joins and CONNECT BY query)'
+--------------
+
+ERROR 1064 (42000) at line 525: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.manager_id
+  IS 'Manager id of the employee; has same dom...' at line 1
+--------------
+COMMENT ON COLUMN employees.department_id
+  IS 'Department id where employee works; foreign key to department_id 
+column of the departments table'
+--------------
+
+ERROR 1064 (42000) at line 530: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON COLUMN employees.department_id
+  IS 'Department id where employee works; f...' at line 1

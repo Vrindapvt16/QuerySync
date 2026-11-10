@@ -7,3 +7,5 @@
     );
 the CONSTRAINT region_id_nn NOT NULL - was causing an error
 and  we replaced all by  NOT NULL
+
+3. 
