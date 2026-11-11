@@ -68,14 +68,43 @@ BEGIN
 END secure_dml;
 /
 
+
+
 CREATE OR REPLACE TRIGGER secure_employees
-  BEFORE INSERT OR UPDATE OR DELETE ON employees
+  BEFORE INSERT employees
+  FOR EACH ROW
 BEGIN
   secure_dml;
 END secure_employees;
 /
 
-ALTER TRIGGER secure_employees DISABLE/
+CREATE OR REPLACE TRIGGER secure_employees
+  BEFORE UPDATE employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees;
+/
+
+
+CREATE OR REPLACE TRIGGER secure_employees
+  BEFORE DELETE employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees;
+/
+
+
+-- CREATE OR REPLACE TRIGGER secure_employees
+--   BEFORE INSERT OR UPDATE OR DELETE ON employees
+-- BEGIN
+--   secure_dml;
+-- END secure_employees;
+-- /
+
+-- I removed this bc maria db doesn't have an equivalent 
+-- ALTER TRIGGER secure_employees DISABLE/
 
 -- **************************************************************************
 -- procedure to add a row to the JOB_HISTORY table and row trigger 

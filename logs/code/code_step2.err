@@ -1,0 +1,42 @@
+--------------
+CREATE OR REPLACE TRIGGER secure_employees
+  BEFORE INSERT employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees;
+--------------
+
+ERROR 1064 (42000) at line 73: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees' at line 3
+--------------
+CREATE OR REPLACE TRIGGER secure_employees
+  BEFORE UPDATE employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees;
+--------------
+
+ERROR 1064 (42000) at line 81: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees' at line 3
+--------------
+CREATE OR REPLACE TRIGGER secure_employees
+  BEFORE DELETE employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees;
+--------------
+
+ERROR 1064 (42000) at line 90: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees' at line 3
