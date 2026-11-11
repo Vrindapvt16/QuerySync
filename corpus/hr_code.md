@@ -13,6 +13,32 @@ evedinece by running sample trigger code with three dt examples
 2. with row level trigger and works 
 3. with row level but on multiple events in one trigger and failes 
 
+CREATE OR REPLACE TRIGGER secure_employees_ins
+  BEFORE INSERT employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END;
+/
+
+CREATE OR REPLACE TRIGGER secure_employees_upd
+  BEFORE UPDATE employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END;
+/
+
+
+CREATE OR REPLACE TRIGGER secure_employees_del
+  BEFORE DELETE employees
+  FOR EACH ROW
+BEGIN
+  secure_dml;
+END secure_employees;
+/
+so we created three separte triggers per event 
+
 Ask your teacher whether a faithful migration should leave them out or find a way to disable them.
 
 -- bc the 

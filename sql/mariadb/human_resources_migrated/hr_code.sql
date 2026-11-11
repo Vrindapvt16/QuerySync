@@ -70,29 +70,29 @@ END secure_dml;
 
 
 
-CREATE OR REPLACE TRIGGER secure_employees
-  BEFORE INSERT employees
+CREATE OR REPLACE TRIGGER secure_employees_ins
+  BEFORE INSERT ON employees
   FOR EACH ROW
 BEGIN
   secure_dml;
-END secure_employees;
+END;
 /
 
-CREATE OR REPLACE TRIGGER secure_employees
-  BEFORE UPDATE employees
+CREATE OR REPLACE TRIGGER secure_employees_upd
+  BEFORE UPDATE ON employees
   FOR EACH ROW
 BEGIN
   secure_dml;
-END secure_employees;
+END;
 /
 
 
-CREATE OR REPLACE TRIGGER secure_employees
-  BEFORE DELETE employees
+CREATE OR REPLACE TRIGGER secure_employees_del
+  BEFORE DELETE ON employees
   FOR EACH ROW
 BEGIN
   secure_dml;
-END secure_employees;
+END;
 /
 
 
@@ -104,7 +104,7 @@ END secure_employees;
 -- /
 
 -- I removed this bc maria db doesn't have an equivalent 
--- ALTER TRIGGER secure_employees DISABLE/
+-- ALTER TRIGGER secure_employees DISABLE  (no MariaDB equivalent, removed)
 
 -- **************************************************************************
 -- procedure to add a row to the JOB_HISTORY table and row trigger 
