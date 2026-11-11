@@ -1,0 +1,17 @@
+--------------
+CREATE OR REPLACE TRIGGER secure_employees
+  BEFORE INSERT OR UPDATE OR DELETE ON employees
+BEGIN
+  secure_dml;
+END secure_employees;
+--------------
+
+ERROR 1064 (42000) at line 71: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'OR UPDATE OR DELETE ON employees
+BEGIN
+  secure_dml;
+END secure_employees' at line 2
+--------------
+ALTER TRIGGER secure_employees DISABLE
+--------------
+
+ERROR 1064 (42000) at line 78: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'TRIGGER secure_employees DISABLE' at line 1
