@@ -176,3 +176,8 @@ See [findings.md](findings.md) for:
 **Reference:** [MariaDB Student Database Projects 2026-09](https://mariadb.org/bachelor_hackathon_2026-09/)
 
 *Work in progress.*
+
+
+docker exec -it mariadb-oracle-mode mariadb -uroot -p
+USE sql_practice;
+SOURCE /scripts/t/type_varchar2.sql;
