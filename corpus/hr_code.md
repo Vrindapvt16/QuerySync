@@ -13,8 +13,11 @@ evedinece by running sample trigger code with three dt examples
 2. with row level trigger and works 
 3. with row level but on multiple events in one trigger and failes 
 
+
+
+
 CREATE OR REPLACE TRIGGER secure_employees_ins
-  BEFORE INSERT employees
+  BEFORE INSERT ON employees
   FOR EACH ROW
 BEGIN
   secure_dml;
@@ -22,7 +25,7 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER secure_employees_upd
-  BEFORE UPDATE employees
+  BEFORE UPDATE ON employees
   FOR EACH ROW
 BEGIN
   secure_dml;
@@ -31,12 +34,14 @@ END;
 
 
 CREATE OR REPLACE TRIGGER secure_employees_del
-  BEFORE DELETE employees
+  BEFORE DELETE ON employees
   FOR EACH ROW
 BEGIN
   secure_dml;
-END secure_employees;
+END;
 /
+
+
 so we created three separte triggers per event 
 
 Ask your teacher whether a faithful migration should leave them out or find a way to disable them.
@@ -44,6 +49,17 @@ Ask your teacher whether a faithful migration should leave them out or find a wa
 -- bc the 
 -- ALTER TRIGGER secure_employees DISABLE  (no MariaDB equivalent, removed)
 didn't work it gets ommited and them it means that i can't make modification on night and weekends
+
+another good finding the, we got he hr_code.sql to worok without having to edit the RAISE_APPLICATION_ERROR(), BC 
+it was never called, as such it complied with no erros but it doesn't mean it will not cause errors in the long run 
+for example if we update a job history table outside work hrs
+
+
+
+
+
+
+
 
 C:\Users\gebre\Desktop\oracle-migration-lab>docker exec -it mariadb-oracle-mode mariadb -uroot -p hr
 Enter password:
