@@ -1,28 +1,33 @@
-SET sql_mode=ORACLE;
+DROP TABLE IF EXISTS t1;
 
--- V1: NUMBER with precision only (no scale)
--- Expect: some DECIMAL(10,0) or integer type
-CREATE TABLE t1 (a NUMBER(10));
+-- D1: Oracle treats '' as NULL. Does MariaDB?
+CREATE TABLE t1 (a VARCHAR2(10));
+INSERT INTO t1 VALUES ('');
+SELECT a IS NULL AS is_null, LENGTH(a) AS len FROM t1;
+DROP TABLE t1;
+
+-- D2: length counted in characters or bytes? (10 umlauts = 20 bytes in UTF-8)
+CREATE TABLE t1 (a VARCHAR2(10));
+INSERT INTO t1 VALUES ('äöüäöüäöüä');
+SELECT CHAR_LENGTH(a) AS chars, OCTET_LENGTH(a) AS bytes FROM t1;
+DROP TABLE t1;
+
+
+-- S1: explicit length semantics
+CREATE TABLE t1 (a VARCHAR2(10 CHAR));
 SHOW CREATE TABLE t1;
 DROP TABLE t1;
 
--- V2: NUMBER with the maximum Oracle precision
-CREATE TABLE t1 (a NUMBER(38));
+CREATE TABLE t1 (a VARCHAR2(10 BYTE));
 SHOW CREATE TABLE t1;
 DROP TABLE t1;
 
--- V3: precision above Oracle's limit of 38
--- Oracle rejects this. Does MariaDB?
-CREATE TABLE t1 (a NUMBER(39));
+-- S2: national character type
+CREATE TABLE t1 (a NVARCHAR2(10));
 SHOW CREATE TABLE t1;
 DROP TABLE t1;
 
--- V4: negative scale (valid in Oracle: rounds to hundreds)
-CREATE TABLE t1 (a NUMBER(5,-2));
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
-
--- V5: star for precision (valid in Oracle)
-CREATE TABLE t1 (a NUMBER(*,2));
+-- P1: above Oracle's default limit of 4000
+CREATE TABLE t1 (a VARCHAR2(5000));
 SHOW CREATE TABLE t1;
 DROP TABLE t1;
