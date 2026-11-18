@@ -1,23 +1,53 @@
-USE sql_practice;
+SET sql_mode=ORACLE;
 
-DROP TABLE IF EXISTS employees;
-DROP SEQUENCE IF EXISTS emp_seq;
+-- V1: NUMBER with precision only (no scale)
+-- Expect: some DECIMAL(10,0) or integer type
+CREATE TABLE t1 (a NUMBER(10));
+SHOW CREATE TABLE t1;
+DROP TABLE t1;
 
-CREATE TABLE employees (
-    emp_id  NUMBER PRIMARY KEY,
-    name    VARCHAR2(50),
-    dept    VARCHAR2(20),
-    salary  NUMBER
-);
+-- V2: NUMBER with the maximum Oracle precision
+CREATE TABLE t1 (a NUMBER(38));
+SHOW CREATE TABLE t1;
+DROP TABLE t1;
 
-INSERT INTO employees VALUES (1, 'Ada',   'IT',    5000);
-INSERT INTO employees VALUES (2, 'Linus', 'IT',    4500);
-INSERT INTO employees VALUES (3, 'Grace', 'HR',    4000);
-INSERT INTO employees VALUES (4, 'Alan',  'Sales', 3500);
+-- V3: precision above Oracle's limit of 38
+-- Oracle rejects this. Does MariaDB?
+CREATE TABLE t1 (a NUMBER(39));
+SHOW CREATE TABLE t1;
+DROP TABLE t1;
 
-COMMIT;
+-- V4: negative scale (valid in Oracle: rounds to hundreds)
+CREATE TABLE t1 (a NUMBER(5,-2));
+SHOW CREATE TABLE t1;
+DROP TABLE t1;
 
-CREATE SEQUENCE emp_seq START WITH 5 INCREMENT BY 1;
+-- V5: star for precision (valid in Oracle)
+CREATE TABLE t1 (a NUMBER(*,2));
+SHOW CREATE TABLE t1;
+DROP TABLE t1;
+
+
+-- USE sql_practice;
+
+-- DROP TABLE IF EXISTS employees;
+-- DROP SEQUENCE IF EXISTS emp_seq;
+
+-- CREATE TABLE employees (
+--     emp_id  NUMBER PRIMARY KEY,
+--     name    VARCHAR2(50),
+--     dept    VARCHAR2(20),
+--     salary  NUMBER
+-- );
+
+-- INSERT INTO employees VALUES (1, 'Ada',   'IT',    5000);
+-- INSERT INTO employees VALUES (2, 'Linus', 'IT',    4500);
+-- INSERT INTO employees VALUES (3, 'Grace', 'HR',    4000);
+-- INSERT INTO employees VALUES (4, 'Alan',  'Sales', 3500);
+
+-- COMMIT;
+
+-- CREATE SEQUENCE emp_seq START WITH 5 INCREMENT BY 1;
 
 
 
