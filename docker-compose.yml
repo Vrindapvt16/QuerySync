@@ -30,6 +30,20 @@ services:
       - mariadb-data:/var/lib/mysql
       - ./sql/mariadb:/scripts
 
+  mariadb-new:
+    image: mariadb:12.3
+    container_name: mariadb-oracle-mode-12
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: lab
+    command: --sql-mode=ORACLE
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb-data-12:/var/lib/mysql
+      - ./sql/mariadb:/scripts
+
 volumes:
   oracle-data:
   mariadb-data:
+  mariadb-data-12:

@@ -179,5 +179,7 @@ See [findings.md](findings.md) for:
 
 
 docker exec -it mariadb-oracle-mode mariadb -uroot -p
+-- use this for new version 
+    docker exec -it mariadb-oracle-mode-12 mariadb -uroot -p
 USE sql_practice;
 SOURCE /scripts/t/type_varchar2.sql;
