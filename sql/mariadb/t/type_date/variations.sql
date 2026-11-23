@@ -1,89 +1,48 @@
--- (added, not in original) start from a clean state
+-- D1: Does converting DATETIME to MariaDB DATE lose time information?
+
+SET sql_mode='';
+
 DROP TABLE IF EXISTS t1;
 
-SET sql_mode=ORACLE;
-CREATE TABLE t1 (a DATE);
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
+CREATE TABLE t1 (a DATETIME);
 
--- MDEV-19632: qualified type names
-SET sql_mode=DEFAULT;
--- expected error: Unknown data type: 'unknown.date'
-CREATE TABLE t1 (a unknown.DATE);
-
-SET sql_mode=DEFAULT;
-CREATE TABLE t1 (
-  def_date DATE,
-  mdb_date mariadb_schema.DATE,
-  ora_date oracle_schema.DATE,
-  max_date maxdb_schema.DATE
-);
-SHOW CREATE TABLE t1;
-SET sql_mode=ORACLE;
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
+INSERT INTO t1 VALUES ('2001-01-01 14:30:45');
 
 SET sql_mode=ORACLE;
-CREATE TABLE t1 (
-  def_date DATE,
-  mdb_date mariadb_schema.DATE,
-  ora_date oracle_schema.DATE,
-  max_date maxdb_schema.DATE
-);
-SHOW CREATE TABLE t1;
-SET sql_mode=DEFAULT;
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
 
--- ALTER..MODIFY and ALTER..CHANGE understand qualifiers
-SET sql_mode=DEFAULT;
-CREATE TABLE t1 (a DATE);
-INSERT INTO t1 VALUES ('2001-01-01');
-SET sql_mode=ORACLE;
-SHOW CREATE TABLE t1;
 SELECT * FROM t1;
 
-ALTER TABLE t1 MODIFY a DATE;
-SHOW CREATE TABLE t1;
-SELECT * FROM t1;
-
+-- Convert to date-only type
 ALTER TABLE t1 MODIFY a mariadb_schema.DATE;
-SHOW CREATE TABLE t1;
+
+SHOW WARNINGS;
 SELECT * FROM t1;
 
+-- Convert back to Oracle-compatible DATE
 ALTER TABLE t1 MODIFY a oracle_schema.DATE;
-SHOW CREATE TABLE t1;
-SELECT * FROM t1;
 
-ALTER TABLE t1 CHANGE a b mariadb_schema.DATE;
-SHOW CREATE TABLE t1;
-SELECT * FROM t1;
-
-ALTER TABLE t1 CHANGE b a oracle_schema.DATE;
-SHOW CREATE TABLE t1;
 SELECT * FROM t1;
 
 DROP TABLE t1;
 
--- Qualified types in stored routines: not supported yet (MDEV-23353)
--- all three statements below are expected to fail with
--- "Unknown data type: '`mariadb_schema`.`DATE`'"
+
+-- C1 (control): a routine with plain DATE works in Oracle mode
 SET sql_mode=ORACLE;
+DROP FUNCTION IF EXISTS f0;
 DELIMITER $$
-CREATE FUNCTION f1() RETURN mariadb_schema.DATE AS
+CREATE FUNCTION f0() RETURN DATE AS
 BEGIN
   RETURN CURRENT_DATE;
 END;
 $$
-CREATE PROCEDURE p1(a mariadb_schema.DATE) AS
+DELIMITER ;
+DROP FUNCTION f0;
+
+-- C2: the same function with the qualified type (expected: error 1064)
+DELIMITER $$
+CREATE FUNCTION f0() RETURN mariadb_schema.DATE AS
 BEGIN
-  NULL;
-END;
-$$
-CREATE PROCEDURE p1() AS
-  a mariadb_schema.DATE;
-BEGIN
-  NULL;
+  RETURN CURRENT_DATE;
 END;
 $$
 DELIMITER ;

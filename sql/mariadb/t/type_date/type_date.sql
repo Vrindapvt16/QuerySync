@@ -8,12 +8,12 @@ DROP TABLE t1;
 --  MDEV-19632 Replication aborts with ER_SLAVE_CONVERSION_FAILED upon CREATE ... SELECT in ORACLE mode
 -- 
 
-SET sql_mode=DEFAULT;
+SET sql_mode='';
 --   ER_UNKNOWN_DATA_TYPE
 CREATE TABLE t1 (a unknown.DATE);
 
 
-SET sql_mode=DEFAULT;
+SET sql_mode='';
 CREATE TABLE t1 (
   def_date DATE,
   mdb_date mariadb_schema.DATE,
@@ -34,7 +34,7 @@ CREATE TABLE t1 (
   max_date maxdb_schema.DATE
 );
 SHOW CREATE TABLE t1;
-SET sql_mode=DEFAULT;
+SET sql_mode='';
 SHOW CREATE TABLE t1;
 DROP TABLE t1;
 
@@ -43,7 +43,7 @@ DROP TABLE t1;
 --  ALTER..MODIFY and ALTER..CHANGE understand qualifiers 
 -- 
 
-SET sql_mode=DEFAULT;
+SET sql_mode='';
 CREATE TABLE t1 (a DATE);
 INSERT INTO t1 VALUES ('2001-01-01');
 SET sql_mode=ORACLE;
@@ -78,7 +78,7 @@ DROP TABLE t1;
 -- 
 
 SET sql_mode=ORACLE;
-DELIMITER $$;
+DELIMITER $$
 --   ER_UNKNOWN_DATA_TYPE
 CREATE FUNCTION f1() RETURN mariadb_schema.DATE AS
 BEGIN
@@ -98,4 +98,4 @@ BEGIN
   NULL;
 END;
 $$
-DELIMITER ;$$
+DELIMITER ;
