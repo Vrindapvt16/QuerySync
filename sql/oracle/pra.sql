@@ -1,33 +1,7 @@
-DROP TABLE IF EXISTS t1;
-
--- D1: Oracle treats '' as NULL. Does MariaDB?
-CREATE TABLE t1 (a VARCHAR2(10));
-INSERT INTO t1 VALUES ('');
-SELECT a IS NULL AS is_null, LENGTH(a) AS len FROM t1;
-DROP TABLE t1;
-
--- D2: length counted in characters or bytes? (10 umlauts = 20 bytes in UTF-8)
-CREATE TABLE t1 (a VARCHAR2(10));
-INSERT INTO t1 VALUES ('äöüäöüäöüä');
-SELECT CHAR_LENGTH(a) AS chars, OCTET_LENGTH(a) AS bytes FROM t1;
-DROP TABLE t1;
-
-
--- S1: explicit length semantics
-CREATE TABLE t1 (a VARCHAR2(10 CHAR));
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
-
-CREATE TABLE t1 (a VARCHAR2(10 BYTE));
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
-
--- S2: national character type
-CREATE TABLE t1 (a NVARCHAR2(10));
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
-
--- P1: above Oracle's default limit of 4000
-CREATE TABLE t1 (a VARCHAR2(5000));
-SHOW CREATE TABLE t1;
-DROP TABLE t1;
+-- func_to_date variations, Oracle side
+-- run with: @/scripts/t/func_to_date/variations_oracle.sql
+SELECT TO_CHAR(CURRENT_DATE,'YYYY-MM-DD') AS today FROM dual;
+SELECT TO_CHAR(TO_DATE('14:30:25','HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS') AS d1 FROM dual;
+SELECT TO_CHAR(TO_DATE('Oct','MON'),'YYYY-MM-DD') AS d2 FROM dual;
+SELECT TO_DATE('2025-02-30','YYYY-MM-DD') AS d3 FROM dual;
+SELECT TO_CHAR(TO_DATE('26-OCT-25'),'YYYY-MM-DD') AS s1 FROM dual;
